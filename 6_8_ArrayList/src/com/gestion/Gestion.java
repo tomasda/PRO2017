@@ -9,20 +9,93 @@ import java.util.ArrayList;
 public class Gestion {
 
     private Alumno al;
-    private ArrayList<Alumno> alList = new ArrayList();
-    Utils util = new Utils();
-    Menu menu = new Menu();
+    private final ArrayList<Alumno> alList;
+    Utils util;
+    Menu menu;
+
+    public Gestion() {
+        alList = new ArrayList();
+        util = new Utils();
+        menu = new Menu();
+    }
 
     public void run() {
 
-        int mod = util.leerInt("Insertar el número de Módulos de cada Alumno");
-        String[] modulos = new String[mod];
-        int i = 0;
+        int a;
+        int b;
         do {
-            modulos[i] = util.leerString("Inserte el nombre del Módulo " + i);
-            i++;
-        } while (mod > i);
-        Alumno.setModulos(modulos);
+            util.limpiarConsola();
+            System.out.println(menu.Menu());
+            a = util.leerInt("\t\tSeleccione una opción");
+            switch (a) {
+                case 0:
+                    System.exit(0);
+                    break;
+                case 1:
+                    util.limpiarConsola();
+                    insertAlumnos();
+                    break;
+                case 2:
+                    util.limpiarConsola();
+                    System.out.print(menu.showMessage(alList, 2));
+                    util.leerInput("\n\tPulse una tecla para continuar");
+                    break;
+                case 3:
+                    util.limpiarConsola();
+                    System.out.print(menu.showMessage(alList, 3));
+                    util.leerInput("\n\tPulse una tecla para continuar");
+                    break;
+                case 4:
+                    util.limpiarConsola();
+                    System.out.print(menu.showMessage(alList, 4));
+                    util.leerInput("\n\tPulse una tecla para continuar");
+                    break;
+                case 5:
+                    util.limpiarConsola();
+                    System.out.print(menu.showMessage(alList, 5));
+                    util.leerInput("\n\tPulse una tecla para continuar");
+                    break;
+                case 6:
+                    util.limpiarConsola();
+                    if (!alList.isEmpty()) {
+                        System.out.print(menu.solicitarAlumno(alList));
+                        b = util.leerInt("\n\tIntroduce el número del alumno:");
+                        util.limpiarConsola();
+                        System.out.println(menu.showAlum(alList, b));
+                        util.leerInput("\n\tPulse una tecla para continuar");
+                    } else {
+                        System.out.println("\n\tLa lista de usuarios está vacía.");
+                        util.leerInput("\n\tPulse una tecla para continuar!!");
+                    }
+                    break;
+            }
+        } while (a != 0);
+    }
+
+    public void insertAlumnos() {
+        int mod;
+        String[] modulos;
+        /*
+        En este método contemplo tanto la creación cómo la incorporación de nuevos Alumnos
+        
+            CREACIÓN
+         */
+        if (alList.isEmpty()) {
+            mod = util.leerInt("Insertar el número de Módulos de cada Alumno");
+            modulos = new String[mod];
+            int i = 0;
+            do {
+                modulos[i] = util.leerString("Inserte el nombre del Módulo " + i);
+                i++;
+            } while (mod > i);
+            Alumno.setModulos(modulos);
+        } else {
+            modulos = Alumno.getModulos();
+            mod = modulos.length;
+        }
+        /*
+            INCORPORACIÓN DE ALUMNOS
+         */
         util.limpiarConsola();
         boolean otro;
         double[] notas;
@@ -32,17 +105,15 @@ public class Gestion {
             int ii = 0;
             notas = new double[mod];
             do {
-                notas[ii] = util.leerDouble("Inserta la nota para " + modulos[ii].toString());
+                notas[ii] = util.leerDouble("Inserta la nota para " + modulos[ii]);
                 ii++;
             } while (mod > ii);
             al = new Alumno(notas, nombre);
             compareAdd(al);
             util.limpiarConsola();
-            System.out.print(menu.showAlumList(alList));
-            otro = util.leerBoolean("Desea Continuar S/N");
+            System.out.print(menu.showMessage(alList, 2));
+            otro = util.leerBoolean("\n\tDesea Continuar S/N");
         } while (otro);
-        util.limpiarConsola();
-        System.out.print(menu.showAlumList(alList));
     }
 
     private void compareAdd(Alumno a) {
