@@ -134,6 +134,15 @@ public class Utils {
         return opt;
     }
     
+    public boolean leerInput(String mensaje) {
+        teclado = new Scanner(System.in);
+        boolean opt = true;
+        System.out.println(" ");
+        System.out.println(mensaje);
+                teclado.nextLine();
+        return opt;
+    }
+    
     public void limpiarConsola() {
         for (int i = 0; i < 50; i++) {
             System.out.println("");
