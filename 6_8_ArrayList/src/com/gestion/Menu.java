@@ -26,12 +26,11 @@ public class Menu {
     public StringBuffer showMessage(ArrayList<Alumno> alList, int type) {
         StringBuffer data = new StringBuffer();
         int arraySize;
-        int b;
-        boolean aprobado;
+        boolean aprobadosSuspendidos;
         String[] modulos;
         double[] nota;
         if (alList.isEmpty()) {
-            data.append("\n\tLA LISTA ESTÁ VACÍA");
+            data.append("\n\tLa lista de usuarios está vacía.");
         } else {
             switch (type) {
                 /*
@@ -57,8 +56,11 @@ public class Menu {
                 3. Alumno que aprueban todos los módulos.
                  */
                 case 3:
-                    aprobado = true;
-                    data = aprobados(alList, aprobado);
+                    /*
+                    Si aprobadosSuspendidos es true me devuelve los aprobados
+                    */
+                    aprobadosSuspendidos = true;
+                    data = aprobados(alList, aprobadosSuspendidos);
                     break;
                 /*
                 4. Nota media de las calificaciones de cada alumno.
@@ -86,8 +88,11 @@ public class Menu {
                 5. Alumnos que suspenden todos los módulos."
                  */
                 case 5:
-                    aprobado = false;
-                    data = aprobados(alList, aprobado);
+                    /*
+                    Y si aprobadosSuspendidos es false me devuelve los Suspedidos
+                    */
+                    aprobadosSuspendidos = false;
+                    data = aprobados(alList, aprobadosSuspendidos);
                     break;
             }
 
@@ -98,18 +103,15 @@ public class Menu {
     public StringBuffer showAlum(ArrayList<Alumno> alList, int b) {
         StringBuffer data = new StringBuffer();
         if (!alList.isEmpty()) {
-            String[] modulos;
-            int arraySize;
-            double[] nota;
-            arraySize = Alumno.getModulos().length;
-            modulos = new String[arraySize];
+            int arraySize = Alumno.getModulos().length;
+            String[] modulos = new String[arraySize];
             modulos = Alumno.getModulos();
-            nota = new double[arraySize];
-            int c = 1;
+            double[] nota = new double[arraySize];
+            int cont = 1;
             boolean existe = false;
             data.append("\nAlumno");
             for (Alumno a : alList) {
-                if (c == b) {
+                if (cont == b) {
                     existe = true;
                     data.append("\n\t").append(a.getNombre());
                     nota = a.getNota();
@@ -117,9 +119,8 @@ public class Menu {
                         data.append("\n\t").append(modulos[i]).append("  ").append(nota[i]);
                     }
                 }
-                c++;
+                cont++;
             }
-
             if (!existe) {
                 data.append("\n\tNo se ha encontrado el Alumno.");
             }
@@ -129,35 +130,32 @@ public class Menu {
         return data;
     }
 
-    private StringBuffer aprobados(ArrayList<Alumno> alList, boolean aprob) {
+    private StringBuffer aprobados(ArrayList<Alumno> alList, boolean tipo) {
         StringBuffer data = new StringBuffer();
         if (!alList.isEmpty()) {
-            int arraySize;
-            String[] modulos;
-            double[] nota;
-            StringBuffer tmpA;
-            arraySize = Alumno.getModulos().length;
-            modulos = new String[arraySize];
+            int arraySize = Alumno.getModulos().length;
+            String[] modulos = new String[arraySize];
+            double[] nota = new double[arraySize];
+            StringBuffer tmpData;
             modulos = Alumno.getModulos();
-            nota = new double[arraySize];
             boolean aprobado;
-            if (aprob) {
+            if (tipo) {
                 data.append("\nAprobados\n");
             } else {
                 data.append("\nSuspendidos\n");
             }
             for (Alumno a : alList) {
                 nota = a.getNota();
-                if (aprob) {
+                if (tipo) {
                     aprobado = true;
                 } else {
                     aprobado = false;
                 }
-                tmpA = new StringBuffer();
-                tmpA.append("\t").append(a.getNombre());
+                tmpData = new StringBuffer();
+                tmpData.append("\t").append(a.getNombre());
                 for (int i = 0; i < modulos.length; i++) {
-                    tmpA.append(" ").append(modulos[i]).append(" ").append(nota[i]);
-                    if (aprob) {
+                    tmpData.append(" ").append(modulos[i]).append(" ").append(nota[i]);
+                    if (tipo) {
                         if (nota[i] < 5) {
                             aprobado = false;
                         }
@@ -167,13 +165,13 @@ public class Menu {
                         }
                     }
                 }
-                if (aprob) {
+                if (tipo) {
                     if (aprobado) {
-                        data.append(tmpA).append("\n");
+                        data.append(tmpData).append("\n");
                     }
                 } else {
                     if (!aprobado) {
-                        data.append(tmpA).append("\n");
+                        data.append(tmpData).append("\n");
                     }
                 }
             }

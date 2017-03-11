@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class Gestion {
 
-    private Alumno al;
+    private Alumno alumnoTmp;
     private final ArrayList<Alumno> alList;
     Utils util;
     Menu menu;
@@ -81,11 +81,11 @@ public class Gestion {
             CREACIÓN
          */
         if (alList.isEmpty()) {
-            mod = util.leerInt("Insertar el número de Módulos de cada Alumno");
+            mod = util.leerInt("Insertar la cantidad de Asignaturas que tiene este curso.");
             modulos = new String[mod];
             int i = 0;
             do {
-                modulos[i] = util.leerString("Inserte el nombre del Módulo " + i);
+                modulos[i] = util.leerString("Inserte el nombre de la Asignatura " + i).toUpperCase();
                 i++;
             } while (mod > i);
             Alumno.setModulos(modulos);
@@ -97,23 +97,27 @@ public class Gestion {
             INCORPORACIÓN DE ALUMNOS
          */
         util.limpiarConsola();
-        boolean otro;
+        boolean continuaIncorporando;
         double[] notas;
+        double notaTmp;
         String nombre;
         do {
-            nombre = (util.leerString("Inserta el nombre"));
-            int ii = 0;
+            nombre = (util.leerString("Inserta el nombre del Alumno"));
+            int cont = 0;
             notas = new double[mod];
             do {
-                notas[ii] = util.leerDouble("Inserta la nota para " + modulos[ii]);
-                ii++;
-            } while (mod > ii);
-            al = new Alumno(notas, nombre);
-            compareAdd(al);
+                do{
+                    notaTmp = util.leerDouble("Inserta la nota para la asignatura " + modulos[cont] + " - (0->10)");
+                    notas[cont] = notaTmp;
+                }while (!validarNota(notaTmp));
+                cont++;
+            } while (mod > cont);
+            alumnoTmp = new Alumno(notas, nombre);
+            compareAdd(alumnoTmp);
             util.limpiarConsola();
             System.out.print(menu.showMessage(alList, 2));
-            otro = util.leerBoolean("\n\tDesea Continuar S/N");
-        } while (otro);
+            continuaIncorporando = util.leerBoolean("\n\tDesea Continuar S/N");
+        } while (continuaIncorporando);
     }
 
     private void compareAdd(Alumno a) {
@@ -123,14 +127,14 @@ public class Gestion {
         Sí es el primer alumno de la lista
          */
         if (size < 1) {
-            alList.add(al);
+            alList.add(alumnoTmp);
         } else {
             /*
             Sí el alumno está entre la lista existente
              */
             for (int i = 0; i < size; i++) {
                 if ((a.getNombre().compareTo(alList.get(i).getNombre())) < 0 && last) {
-                    alList.add(i, al);
+                    alList.add(i, alumnoTmp);
                     /*
                     Sí el alumno no es el último modifico la variable de control last
                     Además la utilizo para que no vuelva a entrar dentro del if durante la tramitación del for
@@ -142,8 +146,16 @@ public class Gestion {
             Sí el alumno es el último de la lista
              */
             if (last) {
-                alList.add(al);
+                alList.add(alumnoTmp);
             }
         }
+    }
+
+    private boolean validarNota(double notaTmp) {
+           if (notaTmp>0 && notaTmp<10){
+               return true;
+           }else{
+               return false;
+           }
     }
 }
