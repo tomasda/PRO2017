@@ -113,25 +113,29 @@ public class Utils {
 
     public boolean leerBoolean(String mensaje) {
         teclado = new Scanner(System.in);
-        boolean opt = false;
+        boolean resutlt=true;
         String tmp = "";
-        boolean ok = true;
+        boolean controlBucle = true;
         System.out.println(" ");
         System.out.println(mensaje);
-        while (ok) {
-            ok = false;
+        while (controlBucle) {
+            controlBucle = false;
             try {
                 tmp = teclado.next();
                 if (tmp.equalsIgnoreCase("s")){
-                    ok=false;
-                    opt = true;
+                    controlBucle=false;
+                    resutlt = true;
+                }
+                if (tmp.equalsIgnoreCase("n")){
+                    controlBucle=false;
+                    resutlt = false;
                 }
             } catch (Exception e) {
-                ok = true;
+                //ok = true;
                 teclado.nextLine();
             }
         }
-        return opt;
+        return resutlt;
     }
     
     public boolean leerInput(String mensaje) {
