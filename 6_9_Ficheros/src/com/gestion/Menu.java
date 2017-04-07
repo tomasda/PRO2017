@@ -43,10 +43,11 @@ public class Menu {
         data.append("\n\t").append("#####################################################################################");
         data.append("\n\t").append("# 1. IMPRIME  TODO EL FICHERO");
         data.append("\n\t").append("# 2. IMPRIME  LAS PRIMERAS N LINEAS");
-        data.append("\n\t").append("# 3. IMPRIME  LINEA A LINEA");
-        data.append("\n\t").append("# 4. IMPRIME  LINEAS IMPARES");
-        data.append("\n\t").append("# 5. IMPRIME  LINEAS PARES");
-        data.append("\n\t").append("# 6. IMPRIME  LINEAS INVERTIDAS");
+        data.append("\n\t").append("# 3. IMPRIME  LAS ÚLTIMAS N LINEAS");
+        data.append("\n\t").append("# 4. IMPRIME  LINEA A LINEA");
+        data.append("\n\t").append("# 5. IMPRIME  LINEAS IMPARES");
+        data.append("\n\t").append("# 6. IMPRIME  LINEAS PARES");
+        data.append("\n\t").append("# 7. IMPRIME  LINEAS INVERTIDAS");
         data.append("\n\t").append("# ");
         data.append("\n\t").append("# 0. VOLVER");
         data.append("\n\t").append("#####################################################################################");

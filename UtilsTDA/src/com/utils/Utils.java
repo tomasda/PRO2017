@@ -87,6 +87,24 @@ public class Utils {
         }
         return opt;
     }
+    
+    public String leerLineString(String mensaje){
+        teclado = new Scanner(System.in);
+        String opt = new String();
+        boolean ok = true;
+        System.out.println(" ");
+        System.out.println(mensaje);
+        while (ok) {
+            ok = false;
+            try {
+                opt = teclado.nextLine();
+            } catch (Exception e) {
+                ok = true;
+                teclado.nextLine();
+            }
+        }
+        return opt;
+    }
 
     public char leerCaracter(String mensaje) {
         teclado = new Scanner(System.in);

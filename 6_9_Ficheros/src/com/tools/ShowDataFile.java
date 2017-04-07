@@ -14,29 +14,41 @@ public class ShowDataFile {
     Utils util = null;
 
     //Realizar un método que muestre por pantalla las N primeras líneas de un fichero de texto, las líneas deben aparecer numeradas.
-    public void showNLines(String fichero, int numLineasAMostrar, boolean lineByLine) {
+    public void showNLines(String fichero, int numLineasAMostrar, boolean lineByLine, boolean firstLastLines) {
         util = new Utils();
         cls = new CreateLoadtSave();
         Queue linesList = new LinkedList();
         linesList = cls.getFileLines(fichero);
         int numlines = linesList.size();
         int i = 1;
+        int lineaInicio = 0;
+        int lineaFin = 0;
+        if (numLineasAMostrar == -9999) {
+            lineaInicio = 1;
+            lineaFin = numlines;
+        } else {
+            if (firstLastLines) {
+                lineaInicio = 1;
+                lineaFin = numLineasAMostrar;
+            } else {
+                lineaInicio = numlines-(numLineasAMostrar-1);
+                lineaFin = numlines;
+            }
+        }
         /*
         SI SE ESTABLECE EL NÚMERO DE LINEAS A MOSTRAR -9999 
         ES QUE VAMOS A MOSTRAR TODAS LAS LINEAS DEL FICHERO.
          */
-        if (numLineasAMostrar < 0) {
-            if (numLineasAMostrar == -9999) {
-                numLineasAMostrar = numlines;
-            }
-            while (numLineasAMostrar >= i && i <= numlines) {
+
+        do {
+            if (lineaInicio <= i && lineaFin >= i) {
                 System.out.println("\n\t" + i + " " + linesList.poll());
-                if (lineByLine) {
-                    util.leerInput("");
-                }
-                ++i;
+            } else {
+                linesList.poll();
             }
-        }
+            ++i;
+        } while (!linesList.isEmpty());
+
     }
 
     public void linesWordsChars(String fichero) {
@@ -125,7 +137,7 @@ public class ShowDataFile {
     }
 
     public void showPharsedJavaFile(String fichero) {
-    /*
+        /*
         método que muestre por pantalla el contenido de un fichero fuente de lenguaje JAVA,
         realizando una traducción a pseudocódigo sencilla, según la siguiente tabla de traducción:
         Lenguaje Java     Texto a mostrar por pantalla
@@ -135,41 +147,44 @@ public class ShowDataFile {
             for                    		PARA
             System.out.println             	MOSTRAR
             next			        LEE
-    */
+         */
         Queue list = new LinkedList();
         cls = new CreateLoadtSave();
         list = cls.getFileLines(fichero);
         StringBuffer data = new StringBuffer();
-        String tmp; char iChar; int iIntermedio; String tmpSalida;
-        if (!list.isEmpty()){
-            do{
-                iIntermedio=0;
-                tmpSalida ="";
-                tmp=list.poll().toString();
+        String tmp;
+        char iChar;
+        int iIntermedio;
+        String tmpSalida;
+        if (!list.isEmpty()) {
+            do {
+                iIntermedio = 0;
+                tmpSalida = "";
+                tmp = list.poll().toString();
                 for (int i = 0; i < tmp.length(); i++) {
                     iChar = tmp.charAt(i);
-                    if (iChar == (char)123){ // {
-                        tmpSalida = tmpSalida + tmp.substring(iIntermedio, i-1)+" INICIO ";
-                        iIntermedio=i+1;
+                    if (iChar == (char) 123) { // {
+                        tmpSalida = tmpSalida + tmp.substring(iIntermedio, i - 1) + " INICIO ";
+                        iIntermedio = i + 1;
                     }
-                    if (iChar == (char)125){ // }
-                        if (i==0){
-                            tmpSalida = tmpSalida + tmp.substring(iIntermedio, i)+" FIN ";
-                        }else{
-                        tmpSalida = tmpSalida + tmp.substring(iIntermedio, i-1)+" FIN ";
+                    if (iChar == (char) 125) { // }
+                        if (i == 0) {
+                            tmpSalida = tmpSalida + tmp.substring(iIntermedio, i) + " FIN ";
+                        } else {
+                            tmpSalida = tmpSalida + tmp.substring(iIntermedio, i - 1) + " FIN ";
                         }
-                        iIntermedio=i+1;
+                        iIntermedio = i + 1;
                     }
                 }
                 // Hablo con Gonzalo y me indica que use replace
-                tmpSalida=tmpSalida.replace("while", "MIENTRAS");
-                tmpSalida=tmpSalida.replace("for", "PARA");
-                tmpSalida=tmpSalida.replace("System.out.println", "MOSTRAR");
-                tmpSalida=tmpSalida.replace("next", "LEE");
-                tmpSalida=tmpSalida.replace("if", "SI");
-                tmpSalida=tmpSalida.replace("do", "HAZ");
+                tmpSalida = tmpSalida.replace("while", "MIENTRAS");
+                tmpSalida = tmpSalida.replace("for", "PARA");
+                tmpSalida = tmpSalida.replace("System.out.println", "MOSTRAR");
+                tmpSalida = tmpSalida.replace("next", "LEE");
+                tmpSalida = tmpSalida.replace("if", "SI");
+                tmpSalida = tmpSalida.replace("do", "HAZ");
                 data.append(tmpSalida).append("\n");
-            }while (!list.isEmpty());
+            } while (!list.isEmpty());
             System.out.println(data);
         }
     }

@@ -1,5 +1,8 @@
 package com.gestion;
 
+import com.gestion.objects.AlumnoBean;
+import com.gestion.objects.AsignaturaBean;
+import com.utils.LoadProperties;
 import com.utils.Utils;
 import java.util.ArrayList;
 
@@ -8,10 +11,13 @@ import java.util.ArrayList;
  */
 public class Gestion {
 
-    private Alumno alumnoTmp;
-    private final ArrayList<Alumno> alList;
+    private AlumnoBean alumnoTmp;
+    private final ArrayList<AlumnoBean> alList;
+    private AsignaturaBean asignTmp;
+    private ArrayList<AsignaturaBean> alAsign;
     Utils util;
     Menu menu;
+    LoadProperties loadProp;
 
     public Gestion() {
         alList = new ArrayList();
@@ -68,59 +74,85 @@ public class Gestion {
                         util.leerInput("\n\tPulse una tecla para continuar!!");
                     }
                     break;
+                case 7:
+                    loadAlumnos();
+                    util.leerInput("\n\tSe han cargado los datos de la BBDD.\n\t Pulse una tecla para continuar!!");
+                    break;
             }
         } while (a != 0);
     }
 
+    private void loadAlumnos() {
+        loadProp = new LoadProperties();
+        alumnoTmp = null;
+//        cliente.T.5=2
+//        cliente.N.5=Jose Juan Estevez
+//        cliente.D.5=34534534A
+//        cliente.M.5.1=BAE
+//        cliente.M.5.1.nota=4.5
+//        cliente.M.5.2=PRO
+//        cliente.M.5.2.nota=4.5
+//        if (alList.isEmpty()) {
+            /*
+            Obtengo el número de Alumnos contenidos en el fichero de configuración
+             */
+            int numAsignaturasAlumno = 0;
+            for (int alu = 0; alu < Integer.parseInt(loadProp.loadPropertie("alumnosData", "Alumnos")); alu++) {
+                alAsign = new ArrayList();
+                /*
+                Para cada Alumno cargo el listado de asignaturas.
+                 */
+                numAsignaturasAlumno = Integer.parseInt(loadProp.loadPropertie("alumnosData", "cliente.T." + alu));
+                int i = 1;
+                while (numAsignaturasAlumno >= i) {
+                    String nombre = loadProp.loadPropertie("alumnosData", "cliente.M." + alu + "." + i);
+                    String tmp = loadProp.loadPropertie("alumnosData", "cliente.M." + alu + "." + i + ".nota");
+                    double nota = Double.parseDouble(tmp);
+                    asignTmp = new AsignaturaBean(nombre, nota);
+                    alAsign.add(asignTmp);
+                    i++;
+                }
+                alumnoTmp = new AlumnoBean(alAsign, loadProp.loadPropertie("alumnosData", "cliente.N." + alu));
+                compareAdd(alumnoTmp);
+            }
+//        }
+    }
+
     public void insertAlumnos() {
-        int mod;
-        String[] modulos;
         /*
         En este método contemplo tanto la creación cómo la incorporación de nuevos Alumnos
         
             CREACIÓN
-         */
-        if (alList.isEmpty()) {
-            mod = util.leerInt("Insertar la cantidad de Asignaturas que tiene este curso.");
-            modulos = new String[mod];
-            int i = 0;
-            do {
-                modulos[i] = util.leerString("Inserte el nombre de la Asignatura " + i).toUpperCase();
-                i++;
-            } while (mod > i);
-            Alumno.setModulos(modulos);
-        } else {
-            modulos = Alumno.getModulos();
-            mod = modulos.length;
-        }
-        /*
             INCORPORACIÓN DE ALUMNOS
          */
         util.limpiarConsola();
         boolean continuaIncorporando;
-        double[] notas;
+//        double[] notas;
         double notaTmp;
+        String AsignNombTmp;
         String nombre;
         do {
+            alAsign = new ArrayList();
             nombre = (util.leerString("Inserta el nombre del Alumno"));
-            int cont = 0;
-            notas = new double[mod];
+//            int cont = 0;
             do {
-                do{
-                    notaTmp = util.leerDouble("Inserta la nota para la asignatura " + modulos[cont] + " - (0->10)");
-                    notas[cont] = notaTmp;
-                }while (!validarNota(notaTmp));
-                cont++;
-            } while (mod > cont);
-            alumnoTmp = new Alumno(notas, nombre);
+                AsignNombTmp = util.leerString("Inserta el nombre de la Asignatura");
+                do {
+                    notaTmp = util.leerDouble("Inserta la nota para la asignatura " + AsignNombTmp + " - (0->10)");
+                } while (!validarNota(notaTmp));
+//                cont++;
+                asignTmp = new AsignaturaBean(AsignNombTmp, notaTmp);
+                alAsign.add(asignTmp);
+            } while (util.leerBoolean("\n\tQuiere añadir otra Asignatura?\n\t S | N"));
+            alumnoTmp = new AlumnoBean(alAsign, nombre);
             compareAdd(alumnoTmp);
             util.limpiarConsola();
             System.out.print(menu.showMessage(alList, 2));
-            continuaIncorporando = util.leerBoolean("\n\tDesea Continuar S/N");
+            continuaIncorporando = util.leerBoolean("\n\tDesea Continuar añadiendo Alumnos S/N");
         } while (continuaIncorporando);
     }
 
-    private void compareAdd(Alumno a) {
+    private void compareAdd(AlumnoBean a) {
         int size = alList.size();
         boolean last = true;
         /*
@@ -152,10 +184,10 @@ public class Gestion {
     }
 
     private boolean validarNota(double notaTmp) {
-           if (notaTmp>0 && notaTmp<10){
-               return true;
-           }else{
-               return false;
-           }
+        if (notaTmp > 0 && notaTmp < 10) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -101,7 +101,7 @@ public class Gestion {
             case 2:
                 //true  =  añadir al final del fichero.
                 util.limpiarConsola();
-                show.showNLines(file, -9999, false);
+                show.showNLines(file, -9999, false,true);
                 cls.setFileData(insertFiles(), true, file);
                 break;
         }
@@ -112,9 +112,10 @@ public class Gestion {
         this.util.limpiarConsola();
         System.out.println(this.menu.visualizarFichero(file));
         int opt;
+        int iLines;
         do {
             opt = util.leerInt("Seleccione una opción");
-        } while (opt > 6 || opt < 0);
+        } while (opt > 7 || opt < 0);
         switch (opt) {
             case 0:
                 break;
@@ -123,27 +124,36 @@ public class Gestion {
                 Muestra el fichero por pantalla
                  */
                 util.limpiarConsola();
-                show.showNLines(file, -9999, false);
+                show.showNLines(file, -9999, false,true);
                 util.leerInput("\n\tFin del fichero.\n\tPulse una tecla para continuar");
                 break;
             case 2:
                 /*
                 Muestra N filas del fichero por pantalla
                  */
-                int iLines = util.leerInt("\n\tIntroducde el número de líneas a mostrar.");
+                iLines = util.leerInt("\n\tIntroducde el número de líneas a mostrar.");
                 util.limpiarConsola();
-                show.showNLines(file, iLines, false);
+                show.showNLines(file, iLines, false,true);
                 util.leerInput("\n\tPulse una tecla para continuar");
                 break;
             case 3:
                 /*
+                Muestra LAS ÚLTIMAS N filas del fichero por pantalla
+                 */
+                iLines = util.leerInt("\n\tIntroducde el número de líneas a mostrar.");
+                util.limpiarConsola();
+                show.showNLines(file, iLines, false,false);
+                util.leerInput("\n\tPulse una tecla para continuar");
+                break;
+            case 4:
+                /*
                 Muestra el fichero linea a linea por pantalla
                  */
                 util.limpiarConsola();
-                show.showNLines(file, -9999, true);
+                show.showNLines(file, -9999, true,true);
                 util.leerInput("\n\tFin del fichero.\n\tPulse una tecla para continuar");
                 break;
-            case 4:
+            case 5:
                 /*
                 Muestra lineas impares del fichero por pantalla
                  */
@@ -151,15 +161,16 @@ public class Gestion {
                 show.showEvenOddLines(file, false);
                 util.leerInput("\n\tFin del fichero.\n\tPulse una tecla para continuar");
                 break;
-            case 5:
+            case 6:
                 /*
+                
                 Muestra lineas pares del fichero por pantalla
                  */
                 util.limpiarConsola();
                 show.showEvenOddLines(file, true);
                 util.leerInput("\n\tFin del fichero.\n\tPulse una tecla para continuar");
                 break;
-            case 6:
+            case 7:
                 /*
                 Muestra lineas invertidas del fichero por pantalla
                  */
