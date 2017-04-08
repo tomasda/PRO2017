@@ -209,7 +209,7 @@ public class Gestion {
         /*
         Si el fichero se elimina
          */
-        System.out.println(menu.ficheroAEliminar(file));
+        System.out.println(menu.ficheroAEliminar(fileToDelete));
 
         if (util.leerBoolean("¿Está seguro de eliminar este fichero S/N?")) {
             cls.deleteFile(fileToDelete);
