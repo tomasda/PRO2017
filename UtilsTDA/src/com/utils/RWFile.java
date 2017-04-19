@@ -1,5 +1,6 @@
-package com.tools.files;
+package com.utils;
 
+import com.utils.LoadProperties;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,7 +20,7 @@ import java.util.logging.Logger;
  *
  * Clase encargada de realizar operaciones con Ficheros.
  */
-public class Files {
+public class RWFile {
 
     File[] lfl = null;
     File fl = null;
@@ -28,87 +29,79 @@ public class Files {
     FileWriter fw = null;
     BufferedWriter bw = null;
 
-    public Files() {
-        
+    public RWFile() {
 
     }
 
-    public Deque fileList(String rootFolder) {
-        Deque<String> dataFileList = new LinkedList();
-        lfl = new File(rootFolder).listFiles();
+    public Deque fileList(String rootDir) {
+        Deque<String> data = new LinkedList();
+        lfl = new File(rootDir).listFiles();
         if (lfl.length > 0) {
             for (File file : lfl) {
-                dataFileList.offer(file.getName());
+                data.offer(file.getName());
             }
         }
-        return dataFileList;
+        return data;
     }
 
-    public Queue loadTextDataFile(String rootFolder, String file) {
-        Queue<String> dataList = new LinkedList();
+    public Queue loadFile(String rootDir, String file) {
+        Queue<String> list = new LinkedList();
         if (null != file) {
             try {
-                fl = new File(rootFolder + file);
+                fl = new File(rootDir + file);
                 fr = new FileReader(fl);
                 br = new BufferedReader(fr);
                 String linea = br.readLine();
                 while (null != linea) {
-                    dataList.offer(linea);
+                    list.offer(linea);
                     linea = br.readLine();
                 }
             } catch (FileNotFoundException e) {
                 System.out.println("Fichero no encontrado \n" + e);
+
             } catch (FileSystemAlreadyExistsException e) {
                 System.out.println("El Fichero ya existe. \n" + e);
             } catch (IOException e) {
                 System.out.println("Error al abrir el fichero " + file + " \n" + e);
             }
         }
-        return dataList;
+        return list;
     }
 
-    public void createEmptyFile(String rootFolder, String fileName) {
-       try {
-            fw = new FileWriter(rootFolder + fileName);
-            bw = new BufferedWriter(fw);
-            bw.flush();
-            bw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Files.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-    }
-
-    public void saveTextDataFile(Queue quData, String rootFolder, String file, boolean addAtEnd) {
+    public void createFile(Queue quFile, String rootDir, String file, boolean addAtEnd) {
         try {
-            fw = new FileWriter(rootFolder + file, addAtEnd);
+            fw = new FileWriter(rootDir + file, addAtEnd);
             bw = new BufferedWriter(fw);
             if (addAtEnd) {
                 bw.newLine();
             }
         } catch (IOException ex) {
-            Logger.getLogger(Files.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RWFile.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            while (!quData.isEmpty()) {
+            while (!quFile.isEmpty()) {
                 try {
-                    while (!quData.isEmpty()) {
-                        bw.append(quData.poll().toString());
-                        if (quData.size() > 0) {
+                    while (!quFile.isEmpty()) {
+                        bw.append(quFile.poll().toString());
+                        if (quFile.size() > 0) {
                             bw.newLine();
                         }
                     }
                     bw.flush();
                     bw.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(Files.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(RWFile.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
             }
+
         }
+
     }
 
-    public boolean deleteFile(String rootFolder, String file) {
+    public boolean deleteFile(String rootDir, String file) {
         boolean confirm = true;
         try {
-            fl = new File(rootFolder + file);
+            fl = new File(rootDir + file);
             fl.delete();
         } catch (Exception e) {
             System.out.println("Error al borrar el fichero, No se ha podido Eliminar \n" + e);

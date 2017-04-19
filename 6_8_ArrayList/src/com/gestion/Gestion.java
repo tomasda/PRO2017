@@ -83,7 +83,7 @@ public class Gestion {
     }
 
     private void loadAlumnos() {
-        loadProp = new LoadProperties();
+        loadProp = new LoadProperties("./files/");
         alumnoTmp = null;
 //        cliente.T.5=2
 //        cliente.N.5=Jose Juan Estevez

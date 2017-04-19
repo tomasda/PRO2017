@@ -1,7 +1,6 @@
-package com.tools.files;
+package com.utils;
 
-import com.tools.functions.Functions;
-import com.tools.inputs.KeysInputs;
+import com.objects.Cola;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -9,17 +8,17 @@ import java.util.Queue;
 /**
  * @author Tomás Delgado Acosta
  */
-public class FilesFunctions {
+public class CreateLoadtSaveFILES {
 
-    Files file;
-    KeysInputs util;
-    Functions funct;
+    RWFile file;
+    Utils util;
+    Cola cl;
     String rootFolder;
 
-    public FilesFunctions(String rootFolder) {
-        file = new Files();
-        util = new KeysInputs();
-        funct = new Functions();
+    public CreateLoadtSaveFILES(String rootFolder) {
+        file = new RWFile();
+        util = new Utils();
+        cl = new Cola();
         this.rootFolder = rootFolder;
     }
 
@@ -28,20 +27,25 @@ public class FilesFunctions {
         return selectFileName();
     }
 
+    public Queue getFileLines(String file) {
+        return this.file.loadFile(rootFolder, file);
+    }
+
     public String getNewFile() {
         return newFile();
+    }
+
+    public void setFileData(Queue data, boolean add, String file) {
+        this.file.createFile(data, rootFolder, file, add);
     }
 
     public void setUpperCopyFile(String file, String newFile) {
         upperAndCopyFile(file, newFile);
     }
-    
-    public boolean getFileExists(String fileName){
-        Deque list = new LinkedList();
-        list = file.fileList(rootFolder);
-        return fileExists(list, fileName);
-    }
 
+    public boolean deleteFile(String fileToDelete) {
+        return file.deleteFile(rootFolder, fileToDelete);
+    }
 
 ////////////////////////////////////////////////////////////////////////////////////////    
     private String selectFileName() {
@@ -49,15 +53,19 @@ public class FilesFunctions {
         list = file.fileList(rootFolder);
         int numFiles = list.size();
         String fichero = "";
-        if (numFiles < 1) {// Si la lista está vacía, crea uno nuevo por defecto.
+        if (numFiles < 1) {
             fichero = newFile();
         } else {
+            
             System.out.println(showListFiles(list));
             int numFichero = util.leerInt("\n\tSelecciona un fichero.");
             list = file.fileList(rootFolder);
-            if (numFichero == 0) { // Si se selecciona crear un fichero nuevo.
+            if (numFichero == 0) {
+                /*
+            Método que me devuelve el nombre de un fichero nuevo.
+                 */
                 fichero = newFile();
-            } else if (numFichero > 0 && numFichero <= numFiles) { // Si el fichero está en la lista.
+            } else if (numFichero >= 0 || numFichero <= numFiles) {
                 int i = 0;
                 while (!list.isEmpty()) {
                     ++i;
@@ -70,14 +78,12 @@ public class FilesFunctions {
                         list.poll();
                     }
                 }
-            }else{//En caso de no haber seleccionado la creación de uno nuevo ni uno existente
-                fichero = null;
             }
         }
         return fichero;
     }
 
-    private boolean fileExists(Deque list, String fichero) {
+    private boolean fileExist(Deque list, String fichero) {
         boolean a = false;
         list = file.fileList(rootFolder);
         while (!list.isEmpty()) {
@@ -99,36 +105,35 @@ public class FilesFunctions {
     }
 
     private String newFile() {
-        Deque flList = new LinkedList();
-        flList = file.fileList(rootFolder);
+        Deque list = new LinkedList();
+        list = file.fileList(rootFolder);
         String fichero;
-        funct.limpiarConsola();
+        util.limpiarConsola();
         boolean tmp = false;
         do {
             if (tmp) {
                 System.out.println("\n\tEl fichero ya existe.");
             }
             fichero = util.leerString("\n\tIntroduce el nombre del fichero a crear");
-            tmp = fileExists(flList, fichero);
+            tmp = fileExist(list, fichero);
         } while (tmp);
-        //list.clear();
-        //file.saveTextDataFile(list, rootFolder, fichero, true);
-        file.createEmptyFile(rootFolder, fichero);
+        list.clear();
+        file.createFile(list, rootFolder, fichero, true);
         return fichero;
     }
 
     private void upperAndCopyFile(String file, String newFile) {
-        Queue dataList = new LinkedList();
-        Queue newDataList = new LinkedList();
-        dataList = this.file.loadTextDataFile(rootFolder, file);
-        newDataList = this.file.loadTextDataFile(rootFolder, newFile);
+        Queue list = new LinkedList();
+        Queue newList = new LinkedList();
+        list = this.file.loadFile(rootFolder, file);
+        newList = this.file.loadFile(rootFolder, newFile);
         String tmp;
-        if (dataList.size() > 0) {
+        if (list.size() > 0) {
             do {
-                tmp = dataList.poll().toString().toUpperCase();
-                newDataList.offer(tmp);
-            } while (!dataList.isEmpty());
+                tmp = list.poll().toString().toUpperCase();
+                newList.offer(tmp);
+            } while (!list.isEmpty());
         }
-        this.file.saveTextDataFile(newDataList,rootFolder, newFile, false);
+        this.setFileData(newList, false, newFile);
     }
 }

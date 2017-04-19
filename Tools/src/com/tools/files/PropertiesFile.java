@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.FileSystemAlreadyExistsException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Queue;
@@ -48,28 +49,55 @@ public class PropertiesFile {
         data = propData.getProperty(variable);
         return data;
     }
-    //public void savePropertie(String fichero, String variable, int valorInt, String valorStr, double valorDo, char valorChr) {
+
     public void savePropertie(String fichero, String variable, String valorStr) {
-            file = new File(rootFolder+fichero+".properties");
-            propData = new Properties();
-            OutputStream outputData = null;
-            try{
-                outputData = new FileOutputStream(rootFolder+fichero+".properties", true);
-                propData.setProperty(variable, valorStr);
-                propData.store(outputData, null);
-            }catch(FileNotFoundException e){
-                // TODO
-            }catch(IOException e){
-                // TODO
-            }finally{
-                if(null != outputData){
-                    try{
+        file = new File(rootFolder + fichero + ".properties");
+        propData = new Properties();
+        OutputStream outputData = null;
+        try {
+            outputData = new FileOutputStream(rootFolder + fichero + ".properties", true);
+            propData.setProperty(variable, valorStr);
+            propData.store(outputData, null);
+        } catch (FileNotFoundException e) {
+            // TODO
+        } catch (IOException e) {
+            // TODO
+        } finally {
+            if (null != outputData) {
+                try {
                     outputData.close();
-                    }catch(IOException e){
-                        // TODO
-                    }
+                } catch (IOException e) {
+                    // TODO
                 }
             }
+        }
+    }
+
+    public void saveListOfProperties(String fichero, String nombre, ArrayList<String> strList) {
+        file = new File(rootFolder + fichero + ".properties");
+        propData = new Properties();
+        OutputStream outputData = null;
+        int size = strList.size();
+        try {
+            outputData = new FileOutputStream(rootFolder + fichero + ".properties", false);
+            propData.setProperty(nombre, Integer.toString(size));
+            for (int i = 0; i < size; i++) {
+                propData.setProperty(Integer.toString(i + 1), strList.get(i));
+            }
+            propData.store(outputData, null);
+        } catch (FileNotFoundException e) {
+            // TODO
+        } catch (IOException e) {
+            // TODO
+        } finally {
+            if (null != outputData) {
+                try {
+                    outputData.close();
+                } catch (IOException e) {
+                    // TODO
+                }
+            }
+        }
     }
 
 //    public Queue loadFile(String rootDir, String file) {
@@ -95,7 +123,4 @@ public class PropertiesFile {
 //        }
 //        return list;
 //    }
-
-
-
 }
