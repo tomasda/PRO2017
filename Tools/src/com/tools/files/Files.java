@@ -116,4 +116,17 @@ public class Files {
         }
         return confirm;
     }
+    
+    public boolean renameFile(String rootFolder, String fileStart, String fileEnd){
+             boolean confirm = true;
+        try {
+            fl = new File(rootFolder + fileStart);
+            File flD = new File(rootFolder + fileEnd);
+            fl.renameTo(flD);
+        } catch (Exception e) {
+            System.out.println("Error al borrar el fichero, No se ha podido Renombrar \n" + e);
+            confirm = false;
+        }
+        return confirm;
+    }
 }
